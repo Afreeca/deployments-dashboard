@@ -1,7 +1,85 @@
+from datetime import datetime, timezone
+
 from deployments.entities import Deployment
 from database.collections import deployments_collection
+from deployments.enums import SortField, SortOrder
+
+SORT_FIELD_MAP = {
+    SortField.created_at: "created_at",
+    SortField.name: "attributes.name",
+    SortField.status: "status",
+    SortField.type: "type",
+    SortField.environment: "environment",
+    SortField.created_by: "created_by",
+}
+
+SORT_ORDER_MAP = {
+    SortOrder.asc: 1,
+    SortOrder.desc: -1,
+}
 
 
-def find_deployments(limit: int = 50) -> list[Deployment]:
-    documents = deployments_collection.find({"deleted_at": None}).limit(limit)
-    return [Deployment.model_validate(document) for document in documents]
+def _parse_cursor(cursor: str) -> tuple[datetime, str]:
+    created_at_raw, deployment_id = cursor.split("|", 1)
+    created_at = datetime.fromisoformat(created_at_raw.replace("Z", "+00:00"))
+
+    if created_at.tzinfo is None:
+        created_at = created_at.replace(tzinfo=timezone.utc)
+
+    return created_at, deployment_id
+
+
+def _build_cursor_filter(cursor: str, sort_order: SortOrder) -> dict:
+    created_at, deployment_id = _parse_cursor(cursor)
+
+    if sort_order == SortOrder.asc:
+        comparison_operator = "$gt"
+    else:
+        comparison_operator = "$lt"
+
+    return {
+        "$or": [
+            {"created_at": {comparison_operator: created_at}},
+            {
+                "created_at": created_at,
+                "deployment_id": {comparison_operator: deployment_id},
+            },
+        ]
+    }
+
+
+def _build_next_cursor(items: list[Deployment]) -> str | None:
+    if not items:
+        return None
+
+    last_item = items[-1]
+    return f"{last_item.created_at.isoformat()}|{last_item.deployment_id}"
+
+
+def find_deployments(
+    limit: int,
+    cursor: str | None,
+    sort_by: SortField,
+    sort_order: SortOrder,
+) -> tuple[list[Deployment], str | None, int]:
+    db_sort_field = SORT_FIELD_MAP[sort_by]
+    db_sort_order = SORT_ORDER_MAP[sort_order]
+    query = {"deleted_at": None}
+
+    if cursor:
+        query.update(_build_cursor_filter(cursor, sort_order))
+
+    documents = list(
+        deployments_collection
+        .find(query)
+        .sort([(db_sort_field, db_sort_order), ("deployment_id", db_sort_order)])
+        .limit(limit + 1)
+    )
+
+    has_more = len(documents) > limit
+    page_documents = documents[:limit]
+    items = [Deployment.model_validate(document) for document in page_documents]
+    next_cursor = _build_next_cursor(items) if has_more else None
+    total = deployments_collection.count_documents({"deleted_at": None})
+
+    return items, next_cursor, total

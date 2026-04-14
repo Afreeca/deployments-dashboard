@@ -30,3 +30,4 @@ class Deployment(BaseModel):
 class DeploymentListResponse(BaseModel):
     items: list[Deployment] = Field(default_factory=list)
     total: int
+    next_cursor: str | None = None
