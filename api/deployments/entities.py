@@ -27,7 +27,21 @@ class Deployment(BaseModel):
     deleted_at: datetime | None = None
 
 
+class DeploymentListItem(BaseModel):
+    deployment_id: str
+    name: str
+    description: str | None = None
+    team: str
+    version: str
+    status: str
+    type: str
+    environment: str
+    created_at: datetime
+    created_by: str
+    updated_at: datetime
+
+
 class DeploymentListResponse(BaseModel):
-    items: list[Deployment] = Field(default_factory=list)
+    items: list[DeploymentListItem] = Field(default_factory=list)
     total: int
     next_cursor: str | None = None

@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 
-from deployments.entities import Deployment
+from deployments.entities import Deployment, DeploymentListItem
 from database.collections import deployments_collection
 from deployments.enums import SortField, SortOrder
 
@@ -56,12 +56,28 @@ def _build_next_cursor(items: list[Deployment]) -> str | None:
     return f"{last_item.created_at.isoformat()}|{last_item.deployment_id}"
 
 
+def _to_list_item(deployment: Deployment) -> DeploymentListItem:
+    return DeploymentListItem(
+        deployment_id=deployment.deployment_id,
+        name=deployment.attributes.name,
+        description=deployment.attributes.description,
+        team=deployment.attributes.team,
+        version=deployment.version,
+        status=deployment.status,
+        type=deployment.type,
+        environment=deployment.environment,
+        created_at=deployment.created_at,
+        created_by=deployment.created_by,
+        updated_at=deployment.updated_at,
+    )
+
+
 def find_deployments(
     limit: int,
     cursor: str | None,
     sort_by: SortField,
     sort_order: SortOrder,
-) -> tuple[list[Deployment], str | None, int]:
+) -> tuple[list[DeploymentListItem], str | None, int]:
     db_sort_field = SORT_FIELD_MAP[sort_by]
     db_sort_order = SORT_ORDER_MAP[sort_order]
     query = {"deleted_at": None}
@@ -78,8 +94,20 @@ def find_deployments(
 
     has_more = len(documents) > limit
     page_documents = documents[:limit]
-    items = [Deployment.model_validate(document) for document in page_documents]
-    next_cursor = _build_next_cursor(items) if has_more else None
+    deployments = [Deployment.model_validate(document) for document in page_documents]
+    items = [_to_list_item(deployment) for deployment in deployments]
+    next_cursor = _build_next_cursor(deployments) if has_more else None
     total = deployments_collection.count_documents({"deleted_at": None})
 
     return items, next_cursor, total
+
+
+def find_deployment_by_id(deployment_id: str) -> Deployment | None:
+    document = deployments_collection.find_one(
+        {"deployment_id": deployment_id, "deleted_at": None}
+    )
+
+    if document is None:
+        return None
+
+    return Deployment.model_validate(document)

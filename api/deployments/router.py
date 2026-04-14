@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Query
 
-from deployments.entities import DeploymentListResponse
-from deployments.service import fetch_deployments
+from deployments.entities import Deployment, DeploymentListResponse
+from deployments.service import fetch_deployment_by_id, fetch_deployments
 from deployments.enums import SortOrder, SortField
 
 router = APIRouter(prefix="/deployments", tags=["deployments"])
@@ -26,3 +26,13 @@ def get_deployments(
         sort_by=sort_by,
         sort_order=sort_order,
     )
+
+
+@router.get("/{deployment_id}", response_model=Deployment)
+def get_deployment_by_id(deployment_id: str) -> Deployment:
+    deployment = fetch_deployment_by_id(deployment_id)
+
+    if deployment is None:
+        raise HTTPException(status_code=404, detail="Deployment not found.")
+
+    return deployment

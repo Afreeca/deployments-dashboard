@@ -147,7 +147,15 @@ def main():
     collection.create_index("created_at")
     collection.create_index("updated_at")
     collection.create_index("status")
-    print("Created indexes on deployment_id, created_at, updated_at, status")
+    collection.create_index([
+        ("deleted_at", 1),
+        ("created_at", -1),
+        ("deployment_id", -1),
+    ])
+    print(
+    "Created indexes for deployment lookup and for browsing active deployments by newest first."
+    )
+
 
     sample = collection.find_one()
     print(f"\nSample record:\n{sample}")

@@ -1,5 +1,5 @@
-from deployments.repository import find_deployments
-from deployments.entities import DeploymentListResponse
+from deployments.repository import find_deployment_by_id, find_deployments
+from deployments.entities import Deployment, DeploymentListResponse
 from deployments.enums import SortField, SortOrder
 
 
@@ -16,3 +16,7 @@ def fetch_deployments(
         sort_order=sort_order,
     )
     return DeploymentListResponse(items=items, total=total, next_cursor=next_cursor)
+
+
+def fetch_deployment_by_id(deployment_id: str) -> Deployment | None:
+    return find_deployment_by_id(deployment_id)
