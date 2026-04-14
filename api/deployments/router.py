@@ -1,7 +1,20 @@
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Query, Response, status
 
-from deployments.entities import Deployment, DeploymentListResponse
-from deployments.service import fetch_deployment_by_id, fetch_deployments
+from deployments.entities import (
+    Deployment,
+    DeploymentListItem,
+    DeploymentListResponse,
+    UpdateDeploymentAttributesRequest,
+    UpdateDeploymentRequest,
+)
+from deployments.service import (
+    delete_deployment_by_id,
+    fetch_deployment_by_id,
+    fetch_deployments,
+    restore_deployment_by_id,
+    update_deployment_attributes_by_id,
+    update_deployment_by_id,
+)
 from deployments.enums import SortOrder, SortField
 
 router = APIRouter(prefix="/deployments", tags=["deployments"])
@@ -31,6 +44,58 @@ def get_deployments(
 @router.get("/{deployment_id}", response_model=Deployment)
 def get_deployment_by_id(deployment_id: str) -> Deployment:
     deployment = fetch_deployment_by_id(deployment_id)
+
+    if deployment is None:
+        raise HTTPException(status_code=404, detail="Deployment not found.")
+
+    return deployment
+
+
+@router.patch("/{deployment_id}", response_model=DeploymentListItem)
+def patch_deployment_by_id(
+    deployment_id: str,
+    update_request: UpdateDeploymentRequest,
+) -> DeploymentListItem:
+    deployment = update_deployment_by_id(
+        deployment_id=deployment_id,
+        update_request=update_request,
+    )
+
+    if deployment is None:
+        raise HTTPException(status_code=404, detail="Deployment not found.")
+
+    return deployment
+
+
+@router.patch("/{deployment_id}/attributes", response_model=Deployment)
+def patch_deployment_attributes_by_id(
+    deployment_id: str,
+    update_request: UpdateDeploymentAttributesRequest,
+) -> Deployment:
+    deployment = update_deployment_attributes_by_id(
+        deployment_id=deployment_id,
+        update_request=update_request,
+    )
+
+    if deployment is None:
+        raise HTTPException(status_code=404, detail="Deployment not found.")
+
+    return deployment
+
+
+@router.delete("/{deployment_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_deployment_by_id_route(deployment_id: str) -> Response:
+    deleted = delete_deployment_by_id(deployment_id)
+
+    if not deleted:
+        raise HTTPException(status_code=404, detail="Deployment not found.")
+
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
+@router.post("/{deployment_id}/restore", response_model=Deployment)
+def restore_deployment_by_id_route(deployment_id: str) -> Deployment:
+    deployment = restore_deployment_by_id(deployment_id)
 
     if deployment is None:
         raise HTTPException(status_code=404, detail="Deployment not found.")

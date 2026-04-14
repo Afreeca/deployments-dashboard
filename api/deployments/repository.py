@@ -1,6 +1,13 @@
 from datetime import datetime, timezone
 
-from deployments.entities import Deployment, DeploymentListItem
+from pymongo import ReturnDocument
+
+from deployments.entities import (
+    Deployment,
+    DeploymentListItem,
+    UpdateDeploymentAttributesRequest,
+    UpdateDeploymentRequest,
+)
 from database.collections import deployments_collection
 from deployments.enums import SortField, SortOrder
 
@@ -105,6 +112,109 @@ def find_deployments(
 def find_deployment_by_id(deployment_id: str) -> Deployment | None:
     document = deployments_collection.find_one(
         {"deployment_id": deployment_id, "deleted_at": None}
+    )
+
+    if document is None:
+        return None
+
+    return Deployment.model_validate(document)
+
+
+def find_deleted_deployment_by_id(deployment_id: str) -> Deployment | None:
+    document = deployments_collection.find_one(
+        {"deployment_id": deployment_id, "deleted_at": {"$ne": None}}
+    )
+
+    if document is None:
+        return None
+
+    return Deployment.model_validate(document)
+
+
+def update_deployment(
+    deployment_id: str,
+    update_request: UpdateDeploymentRequest,
+) -> DeploymentListItem | None:
+    update_fields: dict[str, str | datetime | None] = {"updated_at": datetime.now(timezone.utc)}
+
+    if update_request.name is not None:
+        update_fields["attributes.name"] = update_request.name
+
+    if update_request.description is not None:
+        update_fields["attributes.description"] = update_request.description
+
+    document = deployments_collection.find_one_and_update(
+        {"deployment_id": deployment_id, "deleted_at": None},
+        {"$set": update_fields},
+        return_document=ReturnDocument.AFTER,
+    )
+
+    if document is None:
+        return None
+
+    deployment = Deployment.model_validate(document)
+    return _to_list_item(deployment)
+
+
+def update_deployment_attributes(
+    deployment_id: str,
+    update_request: UpdateDeploymentAttributesRequest,
+) -> Deployment | None:
+    set_fields = {
+        f"attributes.{key}": value
+        for key, value in update_request.set.items()
+    }
+    unset_fields = {
+        f"attributes.{key}": ""
+        for key in update_request.remove
+    }
+
+    update_document: dict[str, dict[str, str | datetime]] = {
+        "$set": {"updated_at": datetime.now(timezone.utc)},
+    }
+
+    if set_fields:
+        update_document["$set"].update(set_fields)
+
+    if unset_fields:
+        update_document["$unset"] = unset_fields
+
+    document = deployments_collection.find_one_and_update(
+        {"deployment_id": deployment_id, "deleted_at": None},
+        update_document,
+        return_document=ReturnDocument.AFTER,
+    )
+
+    if document is None:
+        return None
+
+    return Deployment.model_validate(document)
+
+
+def delete_deployment(deployment_id: str) -> bool:
+    result = deployments_collection.update_one(
+        {"deployment_id": deployment_id, "deleted_at": None},
+        {
+            "$set": {
+                "deleted_at": datetime.now(timezone.utc),
+                "updated_at": datetime.now(timezone.utc),
+            }
+        },
+    )
+
+    return result.modified_count > 0
+
+
+def restore_deployment(deployment_id: str) -> Deployment | None:
+    document = deployments_collection.find_one_and_update(
+        {"deployment_id": deployment_id, "deleted_at": {"$ne": None}},
+        {
+            "$set": {
+                "updated_at": datetime.now(timezone.utc),
+                "deleted_at": None,
+            },
+        },
+        return_document=ReturnDocument.AFTER,
     )
 
     if document is None:

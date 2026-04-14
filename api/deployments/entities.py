@@ -1,6 +1,11 @@
 from datetime import datetime
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
+
+from deployments.validators import (
+    validate_attribute_update_request,
+    validate_deployment_update_request,
+)
 
 
 class DeploymentAttributes(BaseModel):
@@ -39,6 +44,26 @@ class DeploymentListItem(BaseModel):
     created_at: datetime
     created_by: str
     updated_at: datetime
+
+
+class UpdateDeploymentRequest(BaseModel):
+    name: str | None = None
+    description: str | None = None
+
+    @model_validator(mode="after")
+    def validate_request(self) -> "UpdateDeploymentRequest":
+        validate_deployment_update_request(name=self.name, description=self.description)
+        return self
+
+
+class UpdateDeploymentAttributesRequest(BaseModel):
+    set: dict[str, str] = Field(default_factory=dict)
+    remove: list[str] = Field(default_factory=list)
+
+    @model_validator(mode="after")
+    def validate_request(self) -> "UpdateDeploymentAttributesRequest":
+        validate_attribute_update_request(set_fields=self.set, remove_fields=self.remove)
+        return self
 
 
 class DeploymentListResponse(BaseModel):
