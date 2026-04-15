@@ -8,8 +8,24 @@
   }
 }
 
-.deploymentCell {
+.nameCell {
   min-width: 0;
+}
+
+.descriptionCell {
+  color: #64748b;
+  font-size: 0.88rem;
+  min-width: 0;
+}
+
+.idCell {
+  color: #94a3b8;
+  font-family: var(--font-geist-mono), "SFMono-Regular", monospace;
+  font-size: 0.72rem;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .deploymentDescription {
@@ -51,35 +67,6 @@
   margin-top: 0.35rem;
 }
 
-.editButton {
-  align-items: center;
-  background: #fff;
-  border: 1px solid #cbd5e1;
-  border-radius: 999px;
-  color: #475569;
-  cursor: pointer;
-  display: inline-flex;
-  height: 2rem;
-  justify-content: center;
-  opacity: 0;
-  pointer-events: none;
-  position: absolute;
-  right: 0;
-  top: 0;
-  transition: opacity 120ms ease, background-color 120ms ease, color 120ms ease;
-  width: 2rem;
-}
-
-.editButton:hover {
-  background: #e0f2fe;
-  color: #0369a1;
-}
-
-.editIcon {
-  height: 1rem;
-  width: 1rem;
-}
-
 .feedback,
 .feedbackError {
   background: #f8fafc;
@@ -98,7 +85,7 @@
 .tableRow {
   display: grid;
   gap: 0.75rem;
-  grid-template-columns: minmax(0, 1.45fr) 0.85fr 0.8fr 0.8fr 1fr 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 0.9fr) 0.75fr 0.75fr 0.75fr 0.9fr 0.85fr;
 }
 
 .tableHead,
@@ -128,8 +115,8 @@
   background: #f8fafc;
 }
 
-.tableRow:hover .editButton,
-.tableRow:focus-visible .editButton {
+.tableRow:hover [data-edit-trigger],
+.tableRow:focus-visible [data-edit-trigger] {
   opacity: 1;
   pointer-events: auto;
 }
@@ -144,10 +131,8 @@
   transform: translateY(1px);
 }
 
-.tableRows {
-  > a + a {
-    border-top: 1px solid #e2e8f0;
-  }
+.tableRows > .tableRow + .tableRow {
+  border-top: 1px solid #e2e8f0;
 }
 
 .tableText {
@@ -177,7 +162,7 @@
 @media (max-width: 760px) {
   .tableHead,
   .tableRow {
-    min-width: 56rem;
+    min-width: 80rem;
   }
 
   .tableWrapper {

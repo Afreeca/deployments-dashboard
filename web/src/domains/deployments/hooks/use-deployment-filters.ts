@@ -24,6 +24,19 @@ export type DeploymentFilters = {
   setType: (value: DeploymentType | "") => void;
 };
 
+function buildSearchableFields(deployment: DeploymentListItem) {
+  return [
+    deployment.deployment_id,
+    deployment.name,
+    deployment.created_by,
+    deployment.description ?? "",
+    deployment.team,
+    ...Object.values(deployment.attributes).filter(
+      (value): value is string => Boolean(value),
+    ),
+  ];
+}
+
 function sortDeployments(deployments: DeploymentListItem[], sortKey: SortKey) {
   return [...deployments].sort((a, b) => {
     switch (sortKey) {
@@ -49,8 +62,15 @@ export function useDeploymentFilters(deployments: DeploymentListItem[]) {
       if (status && d.status !== status) return false;
       if (type && d.type !== type) return false;
       if (environment && d.environment !== environment) return false;
-      if (term && ![d.deployment_id, d.name, d.created_by, d.description ?? "", d.team]
-        .some((field) => field.toLowerCase().includes(term))) return false;
+      if (
+        term &&
+        !buildSearchableFields(d).some((field) =>
+          field.toLowerCase().includes(term),
+        )
+      ) {
+        return false;
+      }
+
       return true;
     });
 
