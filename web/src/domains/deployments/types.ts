@@ -32,6 +32,7 @@ export type Deployment = {
 };
 
 export type DeploymentListItem = {
+  attributes: DeploymentAttributes;
   deployment_id: string;
   name: string;
   description: string | null;

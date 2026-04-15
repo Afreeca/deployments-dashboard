@@ -1,6 +1,8 @@
 "use client";
 
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { createAsyncStoragePersister } from "@tanstack/query-async-storage-persister";
+import { QueryClient } from "@tanstack/react-query";
+import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 import { useState } from "react";
 
 type ProvidersProps = {
@@ -20,7 +22,30 @@ export function Providers({ children }: ProvidersProps) {
       }),
   );
 
+  const [persister] = useState(() =>
+    createAsyncStoragePersister({
+      storage:
+        typeof window !== "undefined"
+          ? {
+              getItem: async (key: string) => window.sessionStorage.getItem(key),
+              removeItem: async (key: string) =>
+                window.sessionStorage.removeItem(key),
+              setItem: async (key: string, value: string) =>
+                window.sessionStorage.setItem(key, value),
+            }
+          : undefined,
+    }),
+  );
+
   return (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    <PersistQueryClientProvider
+      client={queryClient}
+      persistOptions={{
+        maxAge: 1000 * 60 * 30,
+        persister,
+      }}
+    >
+      {children}
+    </PersistQueryClientProvider>
   );
 }

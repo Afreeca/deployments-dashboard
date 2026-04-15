@@ -1,0 +1,63 @@
+.fieldLabel {
+  color: #475569;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.filters {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.searchField {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.searchInput,
+.selectInput {
+  appearance: none;
+  background: #fff;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.9rem;
+  color: #0f172a;
+  font: inherit;
+  min-height: 3rem;
+  outline: none;
+  padding: 0.8rem 0.95rem;
+  transition:
+    border-color 140ms ease,
+    box-shadow 140ms ease;
+  width: 100%;
+}
+
+.searchInput::placeholder {
+  color: #94a3b8;
+}
+
+.searchInput:focus,
+.selectInput:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+}
+
+.selectField {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.selectGrid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+@media (max-width: 760px) {
+  .selectGrid {
+    grid-template-columns: 1fr;
+  }
+}

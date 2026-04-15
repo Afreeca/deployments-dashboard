@@ -72,6 +72,7 @@ def _build_next_cursor(items: list[Deployment]) -> str | None:
 def _to_list_item(deployment: Deployment) -> DeploymentListItem:
     return DeploymentListItem(
         deployment_id=deployment.deployment_id,
+        attributes=deployment.attributes,
         name=deployment.attributes.name,
         description=deployment.attributes.description,
         team=deployment.attributes.team,

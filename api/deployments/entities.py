@@ -34,6 +34,7 @@ class Deployment(BaseModel):
 
 class DeploymentListItem(BaseModel):
     deployment_id: str
+    attributes: DeploymentAttributes
     name: str
     description: str | None = None
     team: str
