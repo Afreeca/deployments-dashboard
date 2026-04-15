@@ -7,6 +7,10 @@ export function useDeployments() {
   const query = useQuery({
     queryKey: ["deployments"],
     queryFn: fetchDeployments,
+    staleTime: 15_000,
+    refetchOnWindowFocus: true,
+    refetchOnReconnect: true,
+    refetchInterval: 30_000,
   });
 
   return {
