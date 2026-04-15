@@ -10,7 +10,15 @@ import type {
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
-export async function fetchDeployments(): Promise<DeploymentList> {
+type FetchDeploymentsParams = {
+  limit?: number;
+  sort_by?: "created_at" | "name" | "status" | "type" | "environment" | "created_by";
+  sort_order?: "asc" | "desc";
+};
+
+export async function fetchDeployments(
+  params: FetchDeploymentsParams = {},
+): Promise<DeploymentList> {
   if (!API_BASE_URL) {
     throw new Error("NEXT_PUBLIC_API_BASE_URL is not configured.");
   }
@@ -22,6 +30,7 @@ export async function fetchDeployments(): Promise<DeploymentList> {
         headers: {
           "Content-Type": "application/json",
         },
+        params,
       },
     );
 

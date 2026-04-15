@@ -6,7 +6,12 @@ import { fetchDeployments } from "@/domains/deployments/services/deployments-ser
 export function useDeployments() {
   const query = useQuery({
     queryKey: ["deployments"],
-    queryFn: fetchDeployments,
+    queryFn: () =>
+      fetchDeployments({
+        limit: 10000,
+        sort_by: "created_at",
+        sort_order: "desc",
+      }),
     staleTime: 15_000,
     refetchOnWindowFocus: true,
     refetchOnReconnect: true,

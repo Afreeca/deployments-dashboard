@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test": "jest"
   },
   "dependencies": {
     "@tanstack/query-async-storage-persister": "^5.99.0",
@@ -18,12 +19,19 @@
     "react-dom": "19.2.4"
   },
   "devDependencies": {
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
+    "@testing-library/jest-dom": "^6.8.0",
     "@types/node": "^20",
+    "@types/jest": "^30.0.0",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.2.3",
+    "jest": "^30.0.5",
+    "jest-environment-jsdom": "^30.0.5",
     "sass": "^1.99.0",
+    "ts-jest": "^29.4.1",
     "typescript": "^5"
   }
 }

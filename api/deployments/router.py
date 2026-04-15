@@ -28,7 +28,7 @@ router = APIRouter(prefix="/deployments", tags=["deployments"])
 
 @router.get("", response_model=DeploymentListResponse)
 def get_deployments(
-    limit: int = Query(default=50, ge=1, le=500),
+    limit: int = Query(default=50, ge=1, le=10000),
     cursor: str | None = Query(default=None),
     sort_by: SortField = Query(default="created_at"),
     sort_order: SortOrder = Query(default="desc"),
