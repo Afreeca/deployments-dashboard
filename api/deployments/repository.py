@@ -9,7 +9,13 @@ from deployments.entities import (
     UpdateDeploymentRequest,
 )
 from database.collections import deployments_collection
-from deployments.enums import SortField, SortOrder
+from deployments.enums import (
+    DeploymentEnvironment,
+    DeploymentStatus,
+    DeploymentType,
+    SortField,
+    SortOrder,
+)
 
 SORT_FIELD_MAP = {
     SortField.created_at: "created_at",
@@ -84,10 +90,24 @@ def find_deployments(
     cursor: str | None,
     sort_by: SortField,
     sort_order: SortOrder,
+    status: DeploymentStatus | None,
+    deployment_type: DeploymentType | None,
+    environment: DeploymentEnvironment | None,
 ) -> tuple[list[DeploymentListItem], str | None, int]:
     db_sort_field = SORT_FIELD_MAP[sort_by]
     db_sort_order = SORT_ORDER_MAP[sort_order]
-    query = {"deleted_at": None}
+    base_query = {"deleted_at": None}
+
+    if status is not None:
+        base_query["status"] = status.value
+
+    if deployment_type is not None:
+        base_query["type"] = deployment_type.value
+
+    if environment is not None:
+        base_query["environment"] = environment.value
+
+    query = dict(base_query)
 
     if cursor:
         query.update(_build_cursor_filter(cursor, sort_order))
@@ -104,7 +124,7 @@ def find_deployments(
     deployments = [Deployment.model_validate(document) for document in page_documents]
     items = [_to_list_item(deployment) for deployment in deployments]
     next_cursor = _build_next_cursor(deployments) if has_more else None
-    total = deployments_collection.count_documents({"deleted_at": None})
+    total = deployments_collection.count_documents(base_query)
 
     return items, next_cursor, total
 

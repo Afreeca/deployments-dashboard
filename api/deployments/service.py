@@ -18,7 +18,13 @@ from deployments.entities import (
     UpdateDeploymentAttributesRequest,
     UpdateDeploymentRequest,
 )
-from deployments.enums import SortField, SortOrder
+from deployments.enums import (
+    DeploymentEnvironment,
+    DeploymentStatus,
+    DeploymentType,
+    SortField,
+    SortOrder,
+)
 
 
 def fetch_deployments(
@@ -26,12 +32,18 @@ def fetch_deployments(
     cursor: str | None,
     sort_by: SortField,
     sort_order: SortOrder,
+    status: DeploymentStatus | None,
+    deployment_type: DeploymentType | None,
+    environment: DeploymentEnvironment | None,
 ) -> DeploymentListResponse:
     items, next_cursor, total = find_deployments(
         limit=limit,
         cursor=cursor,
         sort_by=sort_by,
         sort_order=sort_order,
+        status=status,
+        deployment_type=deployment_type,
+        environment=environment,
     )
     return DeploymentListResponse(items=items, total=total, next_cursor=next_cursor)
 

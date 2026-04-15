@@ -15,7 +15,13 @@ from deployments.service import (
     update_deployment_attributes_by_id,
     update_deployment_by_id,
 )
-from deployments.enums import SortOrder, SortField
+from deployments.enums import (
+    DeploymentEnvironment,
+    DeploymentStatus,
+    DeploymentType,
+    SortOrder,
+    SortField,
+)
 
 router = APIRouter(prefix="/deployments", tags=["deployments"])
 
@@ -25,7 +31,10 @@ def get_deployments(
     limit: int = Query(default=50, ge=1, le=500),
     cursor: str | None = Query(default=None),
     sort_by: SortField = Query(default="created_at"),
-    sort_order: SortOrder = Query(default="desc")
+    sort_order: SortOrder = Query(default="desc"),
+    status: DeploymentStatus | None = Query(default=None),
+    deployment_type: DeploymentType | None = Query(default=None, alias="type"),
+    environment: DeploymentEnvironment | None = Query(default=None),
 ) -> DeploymentListResponse:
     if cursor and sort_by != SortField.created_at:
         raise HTTPException(
@@ -38,6 +47,9 @@ def get_deployments(
         cursor=cursor,
         sort_by=sort_by,
         sort_order=sort_order,
+        status=status,
+        deployment_type=deployment_type,
+        environment=environment,
     )
 
 
