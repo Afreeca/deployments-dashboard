@@ -7,6 +7,30 @@ export type DeploymentEnvironment =
   | "staging"
   | "development";
 
+export type DeploymentAttributes = {
+  name: string;
+  description: string | null;
+  team: string;
+  region: string | null;
+  language: string | null;
+  framework: string | null;
+  priority: string | null;
+  oncall: string | null;
+};
+
+export type Deployment = {
+  deployment_id: string;
+  version: string;
+  status: DeploymentStatus;
+  type: DeploymentType;
+  environment: DeploymentEnvironment;
+  attributes: DeploymentAttributes;
+  created_at: string;
+  created_by: string;
+  updated_at: string;
+  deleted_at: string | null;
+};
+
 export type DeploymentListItem = {
   deployment_id: string;
   name: string;
@@ -21,8 +45,13 @@ export type DeploymentListItem = {
   updated_at: string;
 };
 
-export type DeploymentListResponse = {
+export type DeploymentList = {
   items: DeploymentListItem[];
   total: number;
   next_cursor: string | null;
+};
+
+export type UpdateDeploymentRequest = {
+  description?: string | null;
+  name?: string;
 };

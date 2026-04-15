@@ -51,6 +51,35 @@
   margin-top: 0.35rem;
 }
 
+.editButton {
+  align-items: center;
+  background: #fff;
+  border: 1px solid #cbd5e1;
+  border-radius: 999px;
+  color: #475569;
+  cursor: pointer;
+  display: inline-flex;
+  height: 2rem;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+  right: 0;
+  top: 0;
+  transition: opacity 120ms ease, background-color 120ms ease, color 120ms ease;
+  width: 2rem;
+}
+
+.editButton:hover {
+  background: #e0f2fe;
+  color: #0369a1;
+}
+
+.editIcon {
+  height: 1rem;
+  width: 1rem;
+}
+
 .feedback,
 .feedbackError {
   background: #f8fafc;
@@ -89,12 +118,34 @@
 .tableRow {
   align-items: center;
   color: #334155;
+  cursor: pointer;
   font-size: 0.92rem;
   padding: 1rem 1.25rem;
+  transition: background-color 120ms ease, transform 120ms ease;
+}
+
+.tableRow:hover {
+  background: #f8fafc;
+}
+
+.tableRow:hover .editButton,
+.tableRow:focus-visible .editButton {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.tableRow:focus-visible {
+  background: #eef6ff;
+  outline: 2px solid #0ea5e9;
+  outline-offset: -2px;
+}
+
+.tableRow:active {
+  transform: translateY(1px);
 }
 
 .tableRows {
-  > div + div {
+  > a + a {
     border-top: 1px solid #e2e8f0;
   }
 }
@@ -116,6 +167,11 @@
   font-size: 0.68rem;
   font-weight: 700;
   margin-top: 0.35rem;
+}
+
+.deploymentCell {
+  position: relative;
+  padding-right: 2.6rem;
 }
 
 @media (max-width: 760px) {

@@ -1,3 +1,10 @@
+"use client";
+
+import { useState } from "react";
+
+import { Modal } from "@/components/modal/modal";
+import { useUpdateDeployment } from "@/domains/deployments/hooks/use-update-deployment";
+import { EditDeploymentForm } from "@/domains/deployments/forms/edit-deployment-form/edit-deployment-form";
 import type { DeploymentListItem } from "@/domains/deployments/types";
 import { DeploymentsTableRow } from "@/domains/deployments/components/deployments-table/deployments-table-row";
 
@@ -14,6 +21,10 @@ export function DeploymentsTable({
   isLoading,
   error,
 }: DeploymentsTableProps) {
+  const updateDeploymentMutation = useUpdateDeployment();
+  const [editingDeployment, setEditingDeployment] =
+    useState<DeploymentListItem | null>(null);
+
   if (isLoading) {
     return <div className={styles.feedback}>Loading deployments...</div>;
   }
@@ -42,9 +53,52 @@ export function DeploymentsTable({
           <DeploymentsTableRow
             key={deployment.deployment_id}
             deployment={deployment}
+            onEdit={() => setEditingDeployment(deployment)}
           />
         ))}
       </div>
+
+      {editingDeployment ? (
+        <Modal
+          ariaLabelledBy="deployment-edit-title"
+          key={editingDeployment.deployment_id}
+          onClose={() => {
+            if (!updateDeploymentMutation.isPending) {
+              setEditingDeployment(null);
+            }
+          }}
+          subtitle={editingDeployment.deployment_id}
+          title="Edit deployment labels"
+        >
+          <EditDeploymentForm
+            deployment={editingDeployment}
+            error={
+              updateDeploymentMutation.error instanceof Error
+                ? updateDeploymentMutation.error.message
+                : null
+            }
+            isSaving={updateDeploymentMutation.isPending}
+            onCancel={() => {
+              if (!updateDeploymentMutation.isPending) {
+                setEditingDeployment(null);
+              }
+            }}
+            onSubmit={(updateRequest) =>
+              updateDeploymentMutation.mutate(
+                {
+                  deploymentId: editingDeployment.deployment_id,
+                  updateRequest,
+                },
+                {
+                  onSuccess: () => {
+                    setEditingDeployment(null);
+                  },
+                },
+              )
+            }
+          />
+        </Modal>
+      ) : null}
     </div>
   );
 }

@@ -15,7 +15,7 @@ export function DeploymentsDashboardPage() {
           <h1 className={styles.pageTitle}>Deployments Dashboard</h1>
         </header>
 
-        <section className={styles.tableCard}>
+        <div className={styles.tableCard}>
           <div className={styles.tableCardHeader}>
             <h2 className={styles.tableTitle}>Deployment list view</h2>
           </div>
@@ -25,7 +25,7 @@ export function DeploymentsDashboardPage() {
             isLoading={isLoading}
             error={error}
           />
-        </section>
+        </div>
       </section>
     </main>
   );
