@@ -1,7 +1,7 @@
 "use client";
 
+import { DeploymentsTable } from "@/domains/deployments/components/deployments-table/deployments-table";
 import { useDeployments } from "@/domains/deployments/hooks/use-deployments";
-import { DeploymentsTable } from "@/domains/deployments/components/deployments-table";
 
 import styles from "./deployments-dashboard-page.module.scss";
 

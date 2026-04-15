@@ -1,0 +1,130 @@
+.creatorInfo {
+  min-width: 0;
+
+  p:first-child {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.deploymentCell {
+  min-width: 0;
+}
+
+.deploymentDescription {
+  color: #64748b;
+  margin-top: 0.25rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.deploymentId {
+  color: #94a3b8;
+  font-family: var(--font-geist-mono), "SFMono-Regular", monospace;
+  font-size: 0.74rem;
+  margin-top: 0.65rem;
+}
+
+.deploymentName,
+.deploymentDescription,
+.deploymentId,
+.creatorInfo p,
+.deploymentVersion,
+.tableText p {
+  margin: 0;
+}
+
+.deploymentName {
+  color: #0f172a;
+  font-size: 1rem;
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.deploymentVersion {
+  color: #94a3b8;
+  font-size: 0.76rem;
+  margin-top: 0.35rem;
+}
+
+.feedback,
+.feedbackError {
+  background: #f8fafc;
+  border-radius: 1rem;
+  color: #475569;
+  margin-top: 1.5rem;
+  padding: 1.25rem;
+}
+
+.feedbackError {
+  background: #fff1f2;
+  color: #be123c;
+}
+
+.tableHead,
+.tableRow {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: minmax(0, 1.45fr) 0.85fr 0.8fr 0.8fr 1fr 1fr;
+}
+
+.tableHead,
+.teamName {
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.tableHead {
+  background: #f8fafc;
+  color: #64748b;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 1rem 1.25rem;
+}
+
+.tableRow {
+  align-items: center;
+  color: #334155;
+  font-size: 0.92rem;
+  padding: 1rem 1.25rem;
+}
+
+.tableRows {
+  > div + div {
+    border-top: 1px solid #e2e8f0;
+  }
+}
+
+.tableText {
+  color: #475569;
+  text-transform: capitalize;
+}
+
+.tableWrapper {
+  border: 1px solid #e2e8f0;
+  border-radius: 1.5rem;
+  margin-top: 1.5rem;
+  overflow: hidden;
+}
+
+.teamName {
+  color: #94a3b8;
+  font-size: 0.68rem;
+  font-weight: 700;
+  margin-top: 0.35rem;
+}
+
+@media (max-width: 760px) {
+  .tableHead,
+  .tableRow {
+    min-width: 56rem;
+  }
+
+  .tableWrapper {
+    overflow-x: auto;
+  }
+}

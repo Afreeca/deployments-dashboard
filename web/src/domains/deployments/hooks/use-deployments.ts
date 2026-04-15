@@ -1,7 +1,6 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-
 import { fetchDeployments } from "@/domains/deployments/services/deployments-service";
 
 export function useDeployments() {
