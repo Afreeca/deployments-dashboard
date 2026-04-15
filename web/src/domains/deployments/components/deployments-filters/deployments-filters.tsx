@@ -1,5 +1,6 @@
 "use client";
 
+import type { DeploymentFilters } from "@/domains/deployments/hooks/use-deployment-filters";
 import type {
   DeploymentEnvironment,
   DeploymentStatus,
@@ -36,33 +37,19 @@ const typeOptions: Array<{
 ];
 
 type DeploymentsFiltersProps = {
-  environment: DeploymentEnvironment | "";
-  onEnvironmentChange: (value: DeploymentEnvironment | "") => void;
-  onSearchTermChange: (value: string) => void;
-  onStatusChange: (value: DeploymentStatus | "") => void;
-  onTypeChange: (value: DeploymentType | "") => void;
-  searchTerm: string;
-  status: DeploymentStatus | "";
-  type: DeploymentType | "";
+  filters: DeploymentFilters;
 };
 
-export function DeploymentsFilters({
-  environment,
-  onEnvironmentChange,
-  onSearchTermChange,
-  onStatusChange,
-  onTypeChange,
-  searchTerm,
-  status,
-  type,
-}: DeploymentsFiltersProps) {
+export function DeploymentsFilters({ filters }: DeploymentsFiltersProps) {
+  const { environment, searchTerm, status, type, setEnvironment, setSearchTerm, setStatus, setType } = filters;
+
   return (
     <div className={styles.filters}>
       <label className={styles.searchField}>
         <span className={styles.fieldLabel}>Search</span>
         <input
           className={styles.searchInput}
-          onChange={(event) => onSearchTermChange(event.target.value)}
+          onChange={(event) => setSearchTerm(event.target.value)}
           placeholder="Search by ID, name, creator, or attribute value"
           type="search"
           value={searchTerm}
@@ -75,7 +62,7 @@ export function DeploymentsFilters({
           <select
             className={styles.selectInput}
             onChange={(event) =>
-              onStatusChange(event.target.value as DeploymentStatus | "")
+              setStatus(event.target.value as DeploymentStatus | "")
             }
             value={status}
           >
@@ -93,7 +80,7 @@ export function DeploymentsFilters({
           <select
             className={styles.selectInput}
             onChange={(event) =>
-              onTypeChange(event.target.value as DeploymentType | "")
+              setType(event.target.value as DeploymentType | "")
             }
             value={type}
           >
@@ -111,9 +98,7 @@ export function DeploymentsFilters({
           <select
             className={styles.selectInput}
             onChange={(event) =>
-              onEnvironmentChange(
-                event.target.value as DeploymentEnvironment | "",
-              )
+              setEnvironment(event.target.value as DeploymentEnvironment | "")
             }
             value={environment}
           >

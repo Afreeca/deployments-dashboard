@@ -1,24 +1,15 @@
 "use client";
 
-import { useState } from "react";
-
 import { DeploymentsFilters } from "@/domains/deployments/components/deployments-filters/deployments-filters";
 import { DeploymentsTable } from "@/domains/deployments/components/deployments-table/deployments-table";
+import { useDeploymentFilters } from "@/domains/deployments/hooks/use-deployment-filters";
 import { useDeployments } from "@/domains/deployments/hooks/use-deployments";
-import type {
-  DeploymentEnvironment,
-  DeploymentStatus,
-  DeploymentType,
-} from "@/domains/deployments/types";
 
 import styles from "./deployments-dashboard-page.module.scss";
 
 export function DeploymentsDashboardPage() {
   const { data, isLoading, error } = useDeployments();
-  const [environment, setEnvironment] = useState<DeploymentEnvironment | "">("");
-  const [searchTerm, setSearchTerm] = useState("");
-  const [status, setStatus] = useState<DeploymentStatus | "">("");
-  const [type, setType] = useState<DeploymentType | "">("");
+  const { filters, filteredDeployments } = useDeploymentFilters(data?.items ?? []);
 
   return (
     <main className={styles.page}>
@@ -33,20 +24,11 @@ export function DeploymentsDashboardPage() {
           </div>
 
           <div className={styles.filtersSection}>
-            <DeploymentsFilters
-              environment={environment}
-              onEnvironmentChange={setEnvironment}
-              onSearchTermChange={setSearchTerm}
-              onStatusChange={setStatus}
-              onTypeChange={setType}
-              searchTerm={searchTerm}
-              status={status}
-              type={type}
-            />
+            <DeploymentsFilters filters={filters} />
           </div>
 
           <DeploymentsTable
-            deployments={data?.items ?? []}
+            deployments={filteredDeployments}
             isLoading={isLoading}
             error={error}
           />
