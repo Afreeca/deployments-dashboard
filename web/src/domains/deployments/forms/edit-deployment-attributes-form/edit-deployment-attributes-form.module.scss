@@ -1,0 +1,152 @@
+.actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.addButton,
+.removeButton,
+.saveButton {
+  border-radius: 0.75rem;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 600;
+  transition:
+    background-color 140ms ease,
+    border-color 140ms ease,
+    color 140ms ease;
+}
+
+.addButton,
+.saveButton {
+  background: #0f172a;
+  border: 1px solid transparent;
+  color: #fff;
+  padding: 0.8rem 1rem;
+}
+
+.addButton:hover:not(:disabled),
+.saveButton:hover:not(:disabled) {
+  background: #1e293b;
+}
+
+.addButton:disabled,
+.removeButton:disabled,
+.saveButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.addControls {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: minmax(0, 28rem) auto;
+}
+
+.addField {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  max-width: 36rem;
+}
+
+.addRow {
+  border-top: 1px solid #e2e8f0;
+  padding-top: 1.25rem;
+}
+
+.error {
+  background: #fff1f2;
+  border-radius: 0.9rem;
+  color: #be123c;
+  margin: 0;
+  padding: 0.9rem 1rem;
+}
+
+.fieldLabel {
+  color: #475569;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.input,
+.select {
+  appearance: none;
+  background: #fff;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.9rem;
+  color: #0f172a;
+  font: inherit;
+  min-height: 3rem;
+  outline: none;
+  padding: 0.8rem 0.95rem;
+  transition:
+    border-color 140ms ease,
+    box-shadow 140ms ease;
+  width: 100%;
+}
+
+.input:focus,
+.select:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+}
+
+.removeButton {
+  background: #fff;
+  border: 1px solid #fecdd3;
+  color: #be123c;
+  padding: 0.45rem 0.75rem;
+}
+
+.removeButton:hover:not(:disabled) {
+  background: #fff1f2;
+}
+
+.requiredBadge {
+  color: #64748b;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  max-width: 36rem;
+}
+
+.rowHeader {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.rows {
+  display: grid;
+  gap: 1rem;
+}
+
+@media (max-width: 760px) {
+  .actions {
+    justify-content: stretch;
+  }
+
+  .addControls {
+    grid-template-columns: 1fr;
+  }
+
+  .addButton,
+  .saveButton {
+    width: 100%;
+  }
+}

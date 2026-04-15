@@ -56,3 +56,8 @@ export type UpdateDeploymentRequest = {
   description?: string | null;
   name?: string;
 };
+
+export type UpdateDeploymentAttributesRequest = {
+  remove: string[];
+  set: Record<string, string>;
+};

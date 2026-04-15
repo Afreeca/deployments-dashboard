@@ -4,6 +4,7 @@ import type {
   Deployment,
   DeploymentList,
   DeploymentListItem,
+  UpdateDeploymentAttributesRequest,
   UpdateDeploymentRequest,
 } from "@/domains/deployments/types";
 
@@ -32,9 +33,9 @@ export async function fetchDeployments(): Promise<DeploymentList> {
 
 export async function fetchDeployment(id: string): Promise<Deployment> {
   if (!API_BASE_URL) {
-    throw new Error("NEXT_PUBLIC_API_BASE_URL is not configured");
+    throw new Error("NEXT_PUBLIC_API_BASE_URL is not configured.");
   }
-  
+
   try {
     const response = await axios.get<Deployment>(
       `${API_BASE_URL}/deployments/${id}`,
@@ -47,7 +48,7 @@ export async function fetchDeployment(id: string): Promise<Deployment> {
 
     return response.data;
   } catch {
-    throw new Error("Failed to fetch deployments details");
+    throw new Error("Failed to fetch deployment details.");
   }
 }
 
@@ -56,7 +57,7 @@ export async function updateDeployment(
   updateRequest: UpdateDeploymentRequest,
 ): Promise<DeploymentListItem> {
   if (!API_BASE_URL) {
-    throw new Error("NEXT_PUBLIC_API_BASE_URL is not configured");
+    throw new Error("NEXT_PUBLIC_API_BASE_URL is not configured.");
   }
 
   try {
@@ -72,6 +73,47 @@ export async function updateDeployment(
 
     return response.data;
   } catch {
-    throw new Error("Failed to update deployment");
+    throw new Error("Failed to update deployment.");
+  }
+}
+
+export async function updateDeploymentAttributes(
+  id: string,
+  updateRequest: UpdateDeploymentAttributesRequest,
+): Promise<Deployment> {
+  if (!API_BASE_URL) {
+    throw new Error("NEXT_PUBLIC_API_BASE_URL is not configured.");
+  }
+
+  try {
+    const response = await axios.patch<Deployment>(
+      `${API_BASE_URL}/deployments/${id}/attributes`,
+      updateRequest,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+
+    return response.data;
+  } catch {
+    throw new Error("Failed to update deployment attributes.");
+  }
+}
+
+export async function deleteDeployment(id: string): Promise<void> {
+  if (!API_BASE_URL) {
+    throw new Error("NEXT_PUBLIC_API_BASE_URL is not configured.");
+  }
+
+  try {
+    await axios.delete(`${API_BASE_URL}/deployments/${id}`, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  } catch {
+    throw new Error("Failed to delete deployment.");
   }
 }

@@ -10,3 +10,9 @@ export function formatDeploymentDate(value: string) {
 export function formatDeploymentType(value: DeploymentListItem["type"]) {
   return value.replaceAll("_", " ");
 }
+
+export function formatAttributeLabel(value: string) {
+  return value
+    .replaceAll("_", " ")
+    .replace(/\b\w/g, (character) => character.toUpperCase());
+}
