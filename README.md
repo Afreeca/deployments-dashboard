@@ -12,19 +12,60 @@ You're building an internal dashboard for a platform team. The system manages de
 
 ## Getting Started
 
-1. Start MongoDB:
-   ```bash
-   docker compose up -d
-   ```
+### Prerequisites
 
-2. Seed the database (~5,000 deployment records):
-   ```bash
-   cd seed
-   pip install -r requirements.txt
-   python seed.py
-   ```
+- Python 3.14+
+- Node.js 18+
+- Docker
 
-3. Build the dashboard.
+### 1. Start MongoDB
+
+```bash
+docker compose up -d
+```
+
+### 2. Seed the database (~5,000 deployment records)
+
+```bash
+cd seed
+pip install -r requirements.txt
+python seed.py
+cd ..
+```
+
+### 3. Run the backend
+
+```bash
+cd api
+python -m venv .venv
+source .venv/bin/activate      # Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+uvicorn main:app --reload
+```
+
+API runs at `http://localhost:8000`. API docs available at `http://localhost:8000/docs`.
+
+### 4. Run the frontend
+
+In a new terminal:
+
+```bash
+cd web
+npm install
+npm run dev
+```
+
+Dashboard runs at `http://localhost:3000`.
+
+### Environment variables
+
+The frontend expects a `.env` file at `web/.env`:
+
+```env
+NEXT_PUBLIC_API_BASE_URL=http://127.0.0.1:8000
+```
+
+This file is already included in the repo.
 
 ## Data Model
 
